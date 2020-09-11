@@ -1,5 +1,6 @@
 #include "cpu.h"
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -67,9 +68,9 @@ void execute(uint16_t instruction, struct CPU* cpu) {
         if (dest & ADR_DEST) cpu->A = out;
 
         // jump program counter
-        uint8_t less_than = neg_flag && (jump & LT);
-        uint8_t equal = zer_flag && (jump & EQ);
-        uint8_t greater_than = !(neg_flag || zer_flag) && (jump & GT);
+        bool less_than = neg_flag && (jump & LT);
+        bool equal = zer_flag && (jump & EQ);
+        bool greater_than = !(neg_flag || zer_flag) && (jump & GT);
 
         if (less_than || equal || greater_than) {
             cpu->PC = cpu->A;
