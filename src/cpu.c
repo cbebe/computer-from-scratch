@@ -89,7 +89,7 @@ void print_cpu(struct CPU* cpu) {
 
 struct CPU* new_cpu() {
     struct CPU* cpu = malloc(sizeof(struct CPU));
-    cpu->RAM = malloc(sizeof(uint16_t) * UINT16_MAX);
+    cpu->RAM = malloc(sizeof(uint16_t) * MAX_MEM);
     cpu->A = 0x0000;
     cpu->D = 0x0000;
     cpu->PC = 0x0000;

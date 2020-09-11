@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#define MAX_MEM 0x6001
+
 struct CPU {
     // registers for use with the ALU
     uint16_t A;
