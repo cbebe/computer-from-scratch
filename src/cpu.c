@@ -2,6 +2,9 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
+
+#include "alu.h"
 
 // macro to extract a single bit from a field
 #define bit(field, bit) (field & (1 << bit)) >> bit
@@ -64,8 +67,11 @@ void execute(uint16_t instruction, struct CPU* cpu) {
         if (dest & ADR_DEST) cpu->A = out;
 
         // jump program counter
-        if ((neg_flag && (jump & LT)) || (!neg_flag && (jump & GT)) ||
-            (zer_flag && (jump & EQ))) {
+        uint8_t less_than = neg_flag && (jump & LT);
+        uint8_t equal = zer_flag && (jump & EQ);
+        uint8_t greater_than = !(neg_flag || zer_flag) && (jump & GT);
+
+        if (less_than || equal || greater_than) {
             cpu->PC = cpu->A;
             return;
         }
@@ -81,20 +87,16 @@ void print_cpu(struct CPU* cpu) {
            cpu->PC);
 }
 
-// test cpu
-int main() {
-    struct CPU cpu;
-    int n = 0x0005;
-    uint16_t sum_1_N[] = {0x0001, 0xffc8, 0x0002, 0xfa88, 0x0001,
-                          0xfc10, n,      0xe4d0, 0x0012, 0xe301,
-                          0x0001, 0xfc10, 0x0002, 0xf088, 0x0001,
-                          0xfdc8, 0x0005, 0xea87, 0x0000};
+struct CPU* new_cpu() {
+    struct CPU* cpu = malloc(sizeof(struct CPU));
+    cpu->RAM = malloc(sizeof(uint16_t) * UINT16_MAX);
+    cpu->A = 0x0000;
+    cpu->D = 0x0000;
+    cpu->PC = 0x0000;
+    return cpu;
+}
 
-    int i = 0;
-    while (i++ < 1000) {
-        printf("%d ", cpu.PC);
-        execute(sum_1_N[cpu.PC], &cpu);
-    }
-
-    return 0;
+void clean_cpu(struct CPU* cpu) {
+    free(cpu->RAM);
+    free(cpu);
 }
