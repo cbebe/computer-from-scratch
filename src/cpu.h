@@ -16,7 +16,9 @@ struct CPU {
 int16_t ALU(int16_t x, int16_t y, uint8_t* status);
 
 struct CPU* new_cpu();
-void clean_cpu(struct CPU* cpu);
+void delete_cpu(struct CPU* cpu);
+
+void print_cpu(struct CPU* cpu);
 
 void execute(uint16_t instruction, struct CPU* cpu);
 

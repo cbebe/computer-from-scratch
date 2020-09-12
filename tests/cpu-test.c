@@ -56,7 +56,7 @@ void CPU_test() {
     }
     printf("sum: %d i: %d\n", cpu->RAM[0x0011], cpu->RAM[0x0010]);
 
-    clean_cpu(cpu);
+    delete_cpu(cpu);
 }
 int main() {
     ALU_test();
