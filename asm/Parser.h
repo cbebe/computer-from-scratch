@@ -4,18 +4,12 @@
 #include <fstream>
 #include <string>
 
-using command = enum { A_COMMAND = 0,
-                       C_COMMAND,
-                       L_COMMAND };
+using command = enum { A_COMMAND = 0, C_COMMAND, L_COMMAND };
 
-enum
-{
-    VAR_START = 0x0400
-};
+enum { VAR_START = 0x0400 };
 
-class Parser
-{
-public:
+class Parser {
+   public:
     Parser(const std::string &filename);
     ~Parser();
     bool hasMoreCommands();
@@ -26,7 +20,7 @@ public:
     std::string comp();
     std::string jump();
 
-private:
+   private:
     std::ifstream in;
     std::string currentCommand;
     uint16_t insCount;

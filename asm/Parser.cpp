@@ -1,5 +1,9 @@
 #include "Parser.h"
 
+#include <algorithm>
+#include <string>
+#include <vector>
+
 using std::string;
 
 Parser::Parser(const string &filename) { in.open(filename, std::ios::in); }
@@ -8,36 +12,19 @@ Parser::~Parser() { in.close(); }
 
 bool Parser::hasMoreCommands() { return !in.eof(); }
 
-void Parser::advance()
-{
+void Parser::advance() {
     string currentLine;
-    do
-    {
+    do {
         std::getline(in, currentLine);
-    } while (currentLine.compare("\n"));
+    } while (!currentLine.compare(""));
 }
 
-command Parser::commandType()
-{
-    return A_COMMAND;
-}
+command Parser::commandType() { return A_COMMAND; }
 
-string Parser::symbol()
-{
-    return "";
-}
+string Parser::symbol() { return ""; }
 
-string Parser::dest()
-{
-    return "";
-}
+string Parser::dest() { return ""; }
 
-string Parser::comp()
-{
-    return "";
-}
+string Parser::comp() { return ""; }
 
-string Parser::jump()
-{
-    return "";
-}
+string Parser::jump() { return ""; }
