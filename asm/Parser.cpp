@@ -1,22 +1,26 @@
 #include "Parser.h"
 
 #include <algorithm>
+#include <iostream>
 #include <string>
 #include <vector>
 
+#include "trim.h"
+
 using std::string;
 
-Parser::Parser(const string &filename) { in.open(filename, std::ios::in); }
+Parser::Parser(std::ifstream* in) : ins(in) {}
 
-Parser::~Parser() { in.close(); }
-
-bool Parser::hasMoreCommands() { return !in.eof(); }
+bool Parser::hasMoreCommands() { return !ins->eof(); }
 
 void Parser::advance() {
     string currentLine;
     do {
-        std::getline(in, currentLine);
-    } while (!currentLine.compare(""));
+        std::getline(*ins, currentLine);
+        currentLine = trim(currentLine);
+        // comments and empty lines are removed
+    } while (currentLine.length() == 0);
+    currentCommand = currentLine;
 }
 
 command Parser::commandType() { return A_COMMAND; }
@@ -28,3 +32,5 @@ string Parser::dest() { return ""; }
 string Parser::comp() { return ""; }
 
 string Parser::jump() { return ""; }
+
+string Parser::getCommand() { return currentCommand; }
