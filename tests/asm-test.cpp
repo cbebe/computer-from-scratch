@@ -22,9 +22,7 @@ bool CodeTest() {
     vector<string> jumpTokens = {"JGT", "JEQ", "JGE", "JLT",
                                  "JNE", "JLE", "JMP"};
     for (int i = 1; i <= 7; ++i) {
-        if (i != Code::jump(jumpTokens[i - 1]))
-            ;
-        return "false";
+        if (i != Code::jump(jumpTokens[i - 1])) return false;
         cout << "Test " << i << " success!\n";
     }
 

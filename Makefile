@@ -11,15 +11,14 @@ T_OBJ_DIR:=tests/obj
 ASM:=$(wildcard asm/*.cpp)
 ASM_OBJ:=$(ASM:asm/%.cpp=obj/cpp/%.o)
 
-test: $(TESTS) 
-	./exe/cpu-test
-	./exe/asm-test
+all: $(OBJ) $(ASM_OBJ)
+
 
 # this makefile is really messy pls do something about this
 exe/cpu-test: $(T_OBJ_DIR)/cpu-test.o obj/c/cpu.o | exe
 	$(CC) $^ -o $@
 
-exe/asm-test: $(T_OBJ_DIR)/asm-test.o obj/cpp/Code.o obj/cpp/Parser.o | exe
+exe/asm-test: $(T_OBJ_DIR)/asm-test.o obj/cpp/Code.o obj/cpp/Parser.o obj/cpp/Trim.o | exe
 	$(CXX) $^ -o $@
 
 tests/obj/asm-test.o: tests/asm-test.cpp | $(T_OBJ_DIR)
@@ -47,6 +46,10 @@ exe:
 	mkdir $@
 
 .PHONY:
+test: $(TESTS) 
+	./exe/cpu-test
+	./exe/asm-test
+
 clean:
 	@rm -rf obj
 	@rm -rf exe

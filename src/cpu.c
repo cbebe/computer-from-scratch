@@ -91,6 +91,9 @@ void print_cpu(struct CPU* cpu) {
 struct CPU* new_cpu() {
     struct CPU* cpu = (struct CPU*)malloc(sizeof(struct CPU));
     cpu->RAM = (uint16_t*)malloc(sizeof(uint16_t) * MAX_MEM);
+
+    if (cpu == NULL || cpu->RAM == NULL) exit(1);
+
     cpu->A = 0x0000;
     cpu->D = 0x0000;
     cpu->PC = 0x0000;
