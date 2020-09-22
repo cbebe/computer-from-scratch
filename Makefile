@@ -18,7 +18,7 @@ all: $(OBJ) $(ASM_OBJ)
 exe/cpu-test: $(T_OBJ_DIR)/cpu-test.o obj/c/cpu.o | exe
 	$(CC) $^ -o $@
 
-exe/asm-test: $(T_OBJ_DIR)/asm-test.o obj/cpp/Code.o obj/cpp/Parser.o obj/cpp/Trim.o | exe
+exe/asm-test: $(T_OBJ_DIR)/asm-test.o obj/cpp/Code.o obj/cpp/Parser.o obj/cpp/trim.o | exe
 	$(CXX) $^ -o $@
 
 tests/obj/asm-test.o: tests/asm-test.cpp | $(T_OBJ_DIR)
@@ -34,7 +34,7 @@ obj/cpp/%.o: asm/%.cpp | obj/cpp
 	$(CXX) $(CPPFLAGS) -c $< -o $@
 
 $(T_OBJ_DIR):
-	mkdir $@
+	mkdir -p $@
 
 obj/c:
 	mkdir -p $@
@@ -43,7 +43,7 @@ obj/cpp:
 	mkdir -p $@
 
 exe:
-	mkdir $@
+	mkdir -p $@
 
 .PHONY:
 test: $(TESTS) 
