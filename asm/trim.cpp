@@ -12,4 +12,12 @@ string rtrim(const string &s) {
     return (end == string::npos) ? "" : s.substr(0, end + 1);
 }
 
-string trim(const string &s) { return rtrim(ltrim(s)); }
+string trimWhitespace(const string &s) { return rtrim(ltrim(s)); }
+
+string stringToken(const string &mainString, const string &delim) {
+    unsigned long pos = mainString.find(delim);
+    if (pos != string::npos)
+        return mainString.substr(pos + 1, mainString.length() - pos - 1);
+
+    return "";
+}
