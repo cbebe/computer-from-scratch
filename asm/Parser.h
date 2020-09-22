@@ -10,21 +10,21 @@ enum { VAR_START = 0x0400 };
 
 class Parser {
    public:
-    Parser(std::ifstream* in);
+    Parser(const std::string &filename);
     bool hasMoreCommands();
-    void advance();
-    command commandType();
+    void advance(unsigned long &lineNo);
+    command commandType(unsigned long &lineNo);
     std::string symbol();
     std::string dest();
     std::string comp();
     std::string jump();
     std::string getCommand();
 
-    //    private:
-    std::ifstream* ins;
+   private:
+    std::ifstream in;
     std::string currentCommand;
-    uint16_t insCount;
-    uint16_t varCount;
+    unsigned long insCount = 0;
+    unsigned long varCount = 0;
 };
 
 #endif

@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <regex>
 #include <string>
 #include <vector>
 
@@ -9,21 +10,41 @@
 
 using std::string;
 
-Parser::Parser(std::ifstream* in) : ins(in) {}
+Parser::Parser(const string &filename) {
+    in.open(filename);
+    if (in.fail()) {
+        std::cout << filename << " not found.\n";
+        exit(1);
+    }
+}
 
-bool Parser::hasMoreCommands() { return !ins->eof(); }
+bool Parser::hasMoreCommands() { return !in.eof(); }
 
-void Parser::advance() {
+void Parser::advance(unsigned long &lineNo) {
     string currentLine;
-    do {
-        std::getline(*ins, currentLine);
-        currentLine = trim(currentLine);
+    bool foundCommand = false;
+    while (!foundCommand && std::getline(in, currentLine)) {
+        currentLine = trimWhitespace(currentLine);
         // comments and empty lines are removed
-    } while (currentLine.length() == 0);
+    }
     currentCommand = currentLine;
 }
 
-command Parser::commandType() { return A_COMMAND; }
+command Parser::commandType(unsigned long &lineNo) {
+    std::regex Argx("@([^0-9][A-Za-z0-9$.:_]*)");
+    std::regex Crgx(
+        "^([A|D|M]{1,3})? *=? *([01DAM+!&|]*) *;? *(J[MGLE][TEQP])?$");
+    std::regex Lrgx("\(([^0-9][A-Za-z0-9$.:_]*)\)");
+    std::vector<std::regex> typeRgx = {Argx, Crgx, Lrgx};
+
+    // i is the command type where A = 0, C = 1, L = 2
+    for (int i = 0; i < 2; ++i)
+        if (std::regex_match(currentCommand, typeRgx[i]))
+            return static_cast<command>(i);
+
+    std::cout << "Invalid syntax at " << lineNo << "\n";
+    exit(1);
+}
 
 string Parser::symbol() { return ""; }
 
@@ -31,6 +52,6 @@ string Parser::dest() { return ""; }
 
 string Parser::comp() { return ""; }
 
-string Parser::jump() { return ""; }
+string Parser::jump() { return stringToken(currentCommand, ";"); }
 
 string Parser::getCommand() { return currentCommand; }
