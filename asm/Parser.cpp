@@ -10,6 +10,14 @@
 
 using std::string;
 
+namespace code_regex {
+const string a = "@([A-Za-z0-9$.:_]*)";
+const string c =
+    "^[ \t]*(A?M?D?)?[ \t]*=?[ \t]*([!-]?[01AMD]|[AMD][ \t]*[-+&|][ "
+    "\t]*[1AMD])[ \t]*(?:;[ \t]*(J(?:MP|EQ|[GNL]E|[LG]T)))?$";
+const string l = "\\(([A-Za-z$.:_][A-Za-z0-9$.:_]*)\\)";
+};  // namespace code_regex
+
 Parser::Parser(const string &filename) {
     in.open(filename);
     if (in.fail()) {
@@ -36,10 +44,9 @@ void Parser::advance(unsigned long &lineNo) {
 }
 
 command Parser::commandType(unsigned long &lineNo) {
-    std::regex Argx("@([^0-9][A-Za-z0-9$.:_]*)");
-    std::regex Crgx(
-        "^([A|D|M]{1,3})? *=? *([01DAM+!&|]*) *;? *(J[MGLE][TEQP])?$");
-    std::regex Lrgx("\\(([^0-9][A-Za-z0-9$.:_]*)\\)");
+    std::regex Argx(code_regex::a);
+    std::regex Crgx(code_regex::c);
+    std::regex Lrgx(code_regex::l);
     std::vector<std::regex> typeRgx = {Argx, Crgx, Lrgx};
 
     // i is the command type where A = 0, C = 1, L = 2
@@ -51,7 +58,10 @@ command Parser::commandType(unsigned long &lineNo) {
     exit(1);
 }
 
-string Parser::symbol() { return ""; }
+string Parser::symbol() {
+    std::regex rgx(code_regex::a);
+    return "";
+}
 
 string Parser::dest() { return ""; }
 
