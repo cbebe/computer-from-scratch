@@ -1,7 +1,7 @@
 CC=gcc
 CXX=g++
 CFLAGS=-O2 -Wall -Isrc
-CPPFLAGS=-O2 -Wall -Iasm
+CPPFLAGS=-O2 -Wall -Iasm -g
 
 SRC:=$(wildcard src/*.c)
 OBJ:=$(SRC:src/%.c=obj/c/%.o)
@@ -13,6 +13,9 @@ ASM_OBJ:=$(ASM:asm/%.cpp=obj/cpp/%.o)
 
 all: $(OBJ) $(ASM_OBJ)
 
+
+exe/asm: obj/cpp/hasm.o obj/cpp/Parser.o obj/cpp/strhelp.o obj/cpp/SymbolTable.o obj/cpp/Code.o | exe
+	$(CXX) $^ -o $@
 
 # this makefile is really messy pls do something about this
 exe/cpu-test: $(T_OBJ_DIR)/cpu-test.o obj/c/cpu.o | exe
