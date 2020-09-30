@@ -2,7 +2,7 @@
 
 #include <algorithm>
 #include <iostream>
-#include <regex>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -10,13 +10,9 @@
 
 using std::string;
 
-namespace code_regex {
-const string a = "@([A-Za-z0-9$.:_]*)";
-const string c =
-    "^[ \t]*(A?M?D?)?[ \t]*=?[ \t]*([!-]?[01AMD]|[AMD][ \t]*[-+&|][ "
-    "\t]*[1AMD])[ \t]*(?:;[ \t]*(J(?:MP|EQ|[GNL]E|[LG]T)))?$";
-const string l = "\\(([A-Za-z$.:_][A-Za-z0-9$.:_]*)\\)";
-};  // namespace code_regex
+std::map<char, command> commandTable = {
+    {'@', A_COM}, {'A', C_COM}, {'D', C_COM}, {'M', C_COM}, {'0', C_COM},
+    {'1', C_COM}, {'-', C_COM}, {'!', C_COM}, {'(', L_COM}};
 
 Parser::Parser(const string &filename) {
     in.open(filename);
@@ -44,29 +40,72 @@ void Parser::advance(unsigned long &lineNo) {
 }
 
 command Parser::commandType(unsigned long &lineNo) {
-    std::regex Argx(code_regex::a);
-    std::regex Crgx(code_regex::c);
-    std::regex Lrgx(code_regex::l);
-    std::vector<std::regex> typeRgx = {Argx, Crgx, Lrgx};
-
-    // i is the command type where A = 0, C = 1, L = 2
-    for (int i = 0; i < 2; ++i)
-        if (std::regex_match(currentCommand, typeRgx[i]))
-            return static_cast<command>(i);
+    if (commandTable.find(currentCommand[0]) != commandTable.end())
+        return commandTable[currentCommand[0]];
 
     std::cout << "Invalid syntax at " << lineNo << "\n";
     exit(1);
 }
 
+// some string helper methods
+bool found(unsigned int pos) { return pos != string::npos; }
+
+string strBetween(string s, unsigned int start, unsigned int end) {
+    return s.substr(start + 1, end - start - 1);
+}
+
+string strBefore(string s, unsigned int end) { return s.substr(0, end); }
+
+string strAfter(string s, unsigned int start) {
+    return strBetween(s, start, s.length());
+}
+
 string Parser::symbol() {
-    std::regex rgx(code_regex::a);
+    if (currentCommand[0] == '@') return strAfter(currentCommand, 0);
+
+    unsigned int openParens = currentCommand.find('(');
+    unsigned int closedParens = currentCommand.find(')');
+
+    if (found(openParens) && found(closedParens))
+        return strBetween(currentCommand, openParens, closedParens);
+
     return "";
 }
 
-string Parser::dest() { return ""; }
+string Parser::dest() {
+    unsigned int equalSign = currentCommand.find('=');
 
-string Parser::comp() { return ""; }
+    if (equalSign != string::npos) return strBefore(currentCommand, equalSign);
 
-string Parser::jump() { return stringToken(currentCommand, ";"); }
+    return "";
+}
+
+string Parser::comp() {
+    unsigned int equalSign = currentCommand.find('=');
+    unsigned int semicolon = currentCommand.find(';');
+
+    // 3 cases for comp
+    // dest = comp ; jump
+    if (equalSign != string::npos) {
+        // there is a jump and dest command
+        if (semicolon != string::npos)
+            return strBetween(currentCommand, equalSign, semicolon);
+
+        // there is no jump command
+        return strAfter(currentCommand, equalSign);
+    }
+
+    // there is no dest command
+    if (semicolon != string::npos) return strBefore(currentCommand, semicolon);
+
+    return "";
+}
+
+string Parser::jump() {
+    unsigned int semicolon = currentCommand.find(';');
+    if (found(semicolon)) return strAfter(currentCommand, semicolon);
+
+    return "";
+}
 
 string Parser::getCommand() { return currentCommand; }

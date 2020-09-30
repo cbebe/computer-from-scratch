@@ -4,7 +4,7 @@
 #include <fstream>
 #include <string>
 
-using command = enum { A_COMMAND = 0, C_COMMAND, L_COMMAND };
+using command = enum { A_COM = 0, C_COM, L_COM };
 
 enum { VAR_START = 0x0400 };
 
