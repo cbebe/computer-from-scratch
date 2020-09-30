@@ -2,17 +2,17 @@
 
 #include <algorithm>
 #include <iostream>
-#include <map>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "strhelp.h"
 
 using std::string;
 
-std::map<char, command> commandTable{{'@', A_COM}, {'A', C_COM}, {'D', C_COM},
-                                     {'M', C_COM}, {'0', C_COM}, {'1', C_COM},
-                                     {'-', C_COM}, {'!', C_COM}, {'(', L_COM}};
+std::unordered_map<char, command> commandTable{
+    {'@', A_COM}, {'A', C_COM}, {'D', C_COM}, {'M', C_COM}, {'0', C_COM},
+    {'1', C_COM}, {'-', C_COM}, {'!', C_COM}, {'(', L_COM}};
 
 Parser::Parser(const string &filename) {
     in.open(filename);

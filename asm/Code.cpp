@@ -2,11 +2,11 @@
 
 #include <cstdint>
 #include <iostream>
-#include <map>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
-std::map<std::string, std::uint8_t> compTable{
+std::unordered_map<std::string, std::uint8_t> compTable{
     {"0", 0x2A},   {"1", 0x3F},   {"-1", 0x3A},  {"D", 0x0C},   {"A", 0x30},
     {"!D", 0x0D},  {"!A", 0x31},  {"-D", 0x0F},  {"-A", 0x33},  {"D+1", 0x1F},
     {"A+1", 0x37}, {"D-1", 0x0E}, {"A-1", 0x32}, {"D+A", 0x02}, {"D-A", 0x13},
