@@ -14,7 +14,7 @@ std::unordered_map<std::string, std::uint8_t> compTable{
     {"-M", 0x73},  {"M+1", 0x37}, {"M-1", 0x72}, {"D+M", 0x42}, {"D-M", 0x53},
     {"M-D", 0x47}, {"D&M", 0x40}, {"D|M", 0x55}};
 
-std::uint8_t Code::dest(std::string token, unsigned long& lineNo) {
+std::uint8_t Code::dest(std::string token, unsigned long &lineNo) {
     std::uint8_t dest_code = 0;
     for (char c : token) {
         if (c == 'M')
@@ -32,18 +32,18 @@ std::uint8_t Code::dest(std::string token, unsigned long& lineNo) {
     return dest_code;
 }
 
-std::uint8_t Code::comp(std::string token, unsigned long& lineNo) {
+std::uint8_t Code::comp(std::string token, unsigned long &lineNo) {
     if (compTable.find(token) != compTable.end()) return compTable[token];
 
     std::cout << "Invalid computation syntax at line " << lineNo << "\n";
     exit(1);
 }
 
-std::uint8_t Code::jump(std::string token, unsigned long& lineNo) {
-    const std::vector<std::string> mnemonics = {"JGT", "JEQ", "JGE", "JLT",
-                                                "JNE", "JLE", "JMP"};
-    for (int i = 1; i < 8; ++i)
-        if (!token.compare(mnemonics[i - 1])) return i;
+std::uint8_t Code::jump(std::string token, unsigned long &lineNo) {
+    const std::vector<std::string> mnemonics = {"",    "JGT", "JEQ", "JGE",
+                                                "JLT", "JNE", "JLE", "JMP"};
+    for (int i = 0; i < 8; ++i)
+        if (!token.compare(mnemonics[i])) return i;
 
     std::cout << "Invalid jump syntax at line " << lineNo << "\n";
     exit(1);

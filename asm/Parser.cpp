@@ -28,12 +28,13 @@ void Parser::advance(unsigned long &lineNo) {
     string currentLine;
     bool foundCommand = false;
     while (!foundCommand && std::getline(in, currentLine)) {
+        lineNo++;
         // comments and empty lines are removed
+        size_t commentPos = currentLine.find("//");
+
+        if (found(commentPos)) currentLine = strBefore(currentLine, commentPos);
         currentLine = trimWhitespace(currentLine);
-        unsigned long commentPos = currentLine.find("//");
-        if (found(commentPos)) {
-            currentLine.erase(commentPos, currentLine.length() - commentPos);
-        }
+
         foundCommand = !currentLine.empty();
     }
     currentCommand = currentLine;
@@ -43,15 +44,15 @@ command Parser::commandType(unsigned long &lineNo) {
     if (commandTable.find(currentCommand[0]) != commandTable.end())
         return commandTable[currentCommand[0]];
 
-    std::cout << "Invalid syntax at " << lineNo << "\n";
+    std::cout << "Invalid syntax at line " << lineNo << "\n";
     exit(1);
 }
 
 string Parser::symbol() {
     if (currentCommand[0] == '@') return strAfter(currentCommand, 0);
 
-    unsigned int openParens = currentCommand.find('(');
-    unsigned int closedParens = currentCommand.find(')');
+    size_t openParens = currentCommand.find('(');
+    size_t closedParens = currentCommand.find(')');
 
     if (found(openParens) && found(closedParens))
         return strBetween(currentCommand, openParens, closedParens);
@@ -60,7 +61,7 @@ string Parser::symbol() {
 }
 
 string Parser::dest() {
-    unsigned int equalSign = currentCommand.find('=');
+    size_t equalSign = currentCommand.find('=');
 
     if (found(equalSign)) return strBefore(currentCommand, equalSign);
 
@@ -68,8 +69,8 @@ string Parser::dest() {
 }
 
 string Parser::comp() {
-    unsigned int equalSign = currentCommand.find('=');
-    unsigned int semicolon = currentCommand.find(';');
+    size_t equalSign = currentCommand.find('=');
+    size_t semicolon = currentCommand.find(';');
 
     bool hasEqualSign = found(equalSign);
     bool hasSemiColon = found(semicolon);
@@ -92,7 +93,7 @@ string Parser::comp() {
 }
 
 string Parser::jump() {
-    unsigned int semicolon = currentCommand.find(';');
+    size_t semicolon = currentCommand.find(';');
     if (found(semicolon)) return strAfter(currentCommand, semicolon);
 
     return "";

@@ -5,13 +5,12 @@
 
 // helper methods for string extraction/manipulation
 
-bool found(unsigned int pos);
+bool found(size_t pos);
 
 std::string trimWhitespace(const std::string &s);
 
-std::string strBetween(const std::string &s, unsigned int start,
-                       unsigned int end);
-std::string strBefore(const std::string &s, unsigned int end);
-std::string strAfter(const std::string &s, unsigned int start);
+std::string strBetween(const std::string &s, size_t start, size_t end);
+std::string strBefore(const std::string &s, size_t end);
+std::string strAfter(const std::string &s, size_t start);
 
 #endif

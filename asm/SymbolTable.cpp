@@ -1,5 +1,6 @@
 #include "SymbolTable.h"
 
+#include <cstdint>
 #include <string>
 #include <unordered_map>
 
@@ -21,6 +22,6 @@ bool SymbolTable::contains(std::string symbol) {
     return addressTable.find(symbol) != addressTable.end();
 }
 
-unsigned int SymbolTable::getAddress(std::string symbol) {
+std::uint16_t SymbolTable::getAddress(std::string symbol) {
     return contains(symbol) ? addressTable[symbol] : 0;
 }
