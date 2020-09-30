@@ -6,13 +6,13 @@
 #include <string>
 #include <vector>
 
-#include "trim.h"
+#include "strhelp.h"
 
 using std::string;
 
-std::map<char, command> commandTable = {
-    {'@', A_COM}, {'A', C_COM}, {'D', C_COM}, {'M', C_COM}, {'0', C_COM},
-    {'1', C_COM}, {'-', C_COM}, {'!', C_COM}, {'(', L_COM}};
+std::map<char, command> commandTable{{'@', A_COM}, {'A', C_COM}, {'D', C_COM},
+                                     {'M', C_COM}, {'0', C_COM}, {'1', C_COM},
+                                     {'-', C_COM}, {'!', C_COM}, {'(', L_COM}};
 
 Parser::Parser(const string &filename) {
     in.open(filename);
@@ -31,7 +31,7 @@ void Parser::advance(unsigned long &lineNo) {
         // comments and empty lines are removed
         currentLine = trimWhitespace(currentLine);
         unsigned long commentPos = currentLine.find("//");
-        if (commentPos != string::npos) {
+        if (found(commentPos)) {
             currentLine.erase(commentPos, currentLine.length() - commentPos);
         }
         foundCommand = !currentLine.empty();
@@ -45,19 +45,6 @@ command Parser::commandType(unsigned long &lineNo) {
 
     std::cout << "Invalid syntax at " << lineNo << "\n";
     exit(1);
-}
-
-// some string helper methods
-bool found(unsigned int pos) { return pos != string::npos; }
-
-string strBetween(string s, unsigned int start, unsigned int end) {
-    return s.substr(start + 1, end - start - 1);
-}
-
-string strBefore(string s, unsigned int end) { return s.substr(0, end); }
-
-string strAfter(string s, unsigned int start) {
-    return strBetween(s, start, s.length());
 }
 
 string Parser::symbol() {
@@ -75,7 +62,7 @@ string Parser::symbol() {
 string Parser::dest() {
     unsigned int equalSign = currentCommand.find('=');
 
-    if (equalSign != string::npos) return strBefore(currentCommand, equalSign);
+    if (found(equalSign)) return strBefore(currentCommand, equalSign);
 
     return "";
 }
@@ -84,11 +71,14 @@ string Parser::comp() {
     unsigned int equalSign = currentCommand.find('=');
     unsigned int semicolon = currentCommand.find(';');
 
+    bool hasEqualSign = found(equalSign);
+    bool hasSemiColon = found(semicolon);
+
     // 3 cases for comp
     // dest = comp ; jump
-    if (equalSign != string::npos) {
+    if (hasEqualSign) {
         // there is a jump and dest command
-        if (semicolon != string::npos)
+        if (hasSemiColon)
             return strBetween(currentCommand, equalSign, semicolon);
 
         // there is no jump command
@@ -96,7 +86,7 @@ string Parser::comp() {
     }
 
     // there is no dest command
-    if (semicolon != string::npos) return strBefore(currentCommand, semicolon);
+    if (hasSemiColon) return strBefore(currentCommand, semicolon);
 
     return "";
 }

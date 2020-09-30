@@ -18,7 +18,7 @@ all: $(OBJ) $(ASM_OBJ)
 exe/cpu-test: $(T_OBJ_DIR)/cpu-test.o obj/c/cpu.o | exe
 	$(CC) $^ -o $@
 
-exe/asm-test: $(T_OBJ_DIR)/asm-test.o obj/cpp/Code.o obj/cpp/Parser.o obj/cpp/trim.o | exe
+exe/asm-test: $(T_OBJ_DIR)/asm-test.o obj/cpp/Code.o obj/cpp/Parser.o obj/cpp/strhelp.o | exe
 	$(CXX) $^ -o $@
 
 tests/obj/asm-test.o: tests/asm-test.cpp | $(T_OBJ_DIR)

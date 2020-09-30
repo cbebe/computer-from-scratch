@@ -1,4 +1,4 @@
-#include "trim.h"
+#include "strhelp.h"
 using std::string;
 const string WHITESPACE = " \n\r\t\f\v";
 
@@ -14,10 +14,14 @@ string rtrim(const string &s) {
 
 string trimWhitespace(const string &s) { return rtrim(ltrim(s)); }
 
-string stringToken(const string &mainString, const string &delim) {
-    unsigned long pos = mainString.find(delim);
-    if (pos != string::npos)
-        return mainString.substr(pos + 1, mainString.length() - pos - 1);
+bool found(unsigned int pos) { return pos != string::npos; }
 
-    return "";
+string strBetween(const string &s, unsigned int start, unsigned int end) {
+    return s.substr(start + 1, end - start - 1);
+}
+
+string strBefore(const string &s, unsigned int end) { return s.substr(0, end); }
+
+string strAfter(const string &s, unsigned int start) {
+    return s.substr(start + 1);
 }
