@@ -7,9 +7,9 @@
 
 class Code {
    public:
-    static std::uint8_t dest(std::string dest);
-    static std::uint8_t comp(std::string comp);
-    static std::uint8_t jump(std::string jump);
+    static std::uint8_t dest(std::string dest, unsigned long& lineNo);
+    static std::uint8_t comp(std::string comp, unsigned long& lineNo);
+    static std::uint8_t jump(std::string jump, unsigned long& lineNo);
 };
 
 #endif
