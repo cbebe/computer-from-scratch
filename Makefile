@@ -1,21 +1,22 @@
 CC=gcc
-CXX=g++
 CFLAGS=-O2 -Wall -Isrc
-CPPFLAGS=-O2 -Wall -Iasm -g
 
-SRC:=$(wildcard src/*.c)
-OBJ:=$(SRC:src/%.c=obj/c/%.o)
+CPU:=$(wildcard cpu/*.c)
+CPU_OBJ:=$(SRC:cpu/%.c=obj/c/%.o)
 TESTS:=exe/cpu-test exe/asm-test
 T_OBJ_DIR:=tests/obj
 
 ASM:=$(wildcard asm/*.cpp)
 ASM_OBJ:=$(ASM:asm/%.cpp=obj/cpp/%.o)
 
-all: $(OBJ) $(ASM_OBJ)
+	
+all: asm cpu
 
+asm:
+	cd asm && $(MAKE)
 
-exe/asm: obj/cpp/hasm.o obj/cpp/Parser.o obj/cpp/strhelp.o obj/cpp/SymbolTable.o obj/cpp/Code.o | exe
-	$(CXX) $^ -o $@
+cpu:
+	cd cpu && $(MAKE)
 
 # this makefile is really messy pls do something about this
 exe/cpu-test: $(T_OBJ_DIR)/cpu-test.o obj/c/cpu.o | exe
@@ -30,30 +31,18 @@ tests/obj/asm-test.o: tests/asm-test.cpp | $(T_OBJ_DIR)
 tests/obj/cpu-test.o: tests/cpu-test.c | $(T_OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-obj/c/%.o: src/%.c | obj/c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-obj/cpp/%.o: asm/%.cpp | obj/cpp
-	$(CXX) $(CPPFLAGS) -c $< -o $@
-
 $(T_OBJ_DIR):
-	mkdir -p $@
-
-obj/c:
-	mkdir -p $@
-
-obj/cpp:
 	mkdir -p $@
 
 exe:
 	mkdir -p $@
 
-.PHONY:
 test: $(TESTS) 
 	./exe/cpu-test
 	./exe/asm-test
 
 clean:
-	@rm -rf obj
-	@rm -rf exe
-	@rm -rf tests/obj
+	cd asm && $(MAKE) clean
+	cd cpu && $(MAKE) clean
+
+.PHONY: all asm cpu test clean
