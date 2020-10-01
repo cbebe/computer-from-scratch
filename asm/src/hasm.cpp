@@ -39,7 +39,6 @@ void parseSymbols(std::string &inputFilename, SymbolTable &table) {
 void assembleCode(std::string &inputFilename, std::ofstream &out,
                   SymbolTable &table) {
     Parser source(inputFilename);
-    Code code;
     unsigned long lineNo = 0;
     unsigned long address = 0x10;  // 0x0 to 0xF are predefined
 
@@ -64,9 +63,9 @@ void assembleCode(std::string &inputFilename, std::ofstream &out,
                 instruction = table.getAddress(symbol);
             }
         } else if (source.commandType(lineNo) == C_COM) {
-            instruction = (7 << 13) | (code.comp(source.comp(), lineNo) << 6) |
-                          (code.dest(source.dest(), lineNo) << 3) |
-                          code.jump(source.jump(), lineNo);
+            instruction = (7 << 13) | (Code::comp(source.comp(), lineNo) << 6) |
+                          (Code::dest(source.dest(), lineNo) << 3) |
+                          Code::jump(source.jump(), lineNo);
         }
         // write in big endian format
         instruction = instruction << 8 | instruction >> 8;
