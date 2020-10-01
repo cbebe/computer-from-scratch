@@ -27,12 +27,11 @@ void parseSymbols(std::string &inputFilename, SymbolTable &table) {
         source.advance(lineNo);
         if (!source.hasMoreCommands()) return;
 
-        if (source.commandType(lineNo) == A_COM ||
-            source.commandType(lineNo) == C_COM)
-            romNum++;
+        command type = source.commandType(lineNo);
+        if (type == A_COM || type == C_COM) romNum++;
 
         std::string symbol = source.symbol();
-        if (source.commandType(lineNo) == L_COM && !table.contains(symbol))
+        if (type == L_COM && !table.contains(symbol))
             table.addEntry(symbol, romNum);
     }
 }
@@ -46,7 +45,11 @@ void assembleCode(std::string &inputFilename, std::ofstream &out,
 
     while (true) {
         source.advance(lineNo);
-        if (!source.hasMoreCommands()) return;
+        if (!source.hasMoreCommands()) {
+            uint16_t halt = 0x0010;  // 0x1000 in big endian
+            out.write(reinterpret_cast<const char *>(&halt), sizeof halt);
+            break;
+        }
 
         std::uint16_t instruction;
 
@@ -61,13 +64,11 @@ void assembleCode(std::string &inputFilename, std::ofstream &out,
                 instruction = table.getAddress(symbol);
             }
         } else if (source.commandType(lineNo) == C_COM) {
-            instruction = 7 << 13;  // C instruction bits
-            std::string comp = source.comp();
-            std::cout << comp;
-            instruction |= code.comp(comp, lineNo) << 6;
-            instruction |= code.dest(source.dest(), lineNo) << 3;
-            instruction |= code.jump(source.jump(), lineNo);
+            instruction = (7 << 13) | (code.comp(source.comp(), lineNo) << 6) |
+                          (code.dest(source.dest(), lineNo) << 3) |
+                          code.jump(source.jump(), lineNo);
         }
+        // write in big endian format
         instruction = instruction << 8 | instruction >> 8;
         out.write(reinterpret_cast<const char *>(&instruction),
                   sizeof instruction);

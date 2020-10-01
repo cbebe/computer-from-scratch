@@ -1,9 +1,9 @@
-#include "../src/cpu.h"
+#include "../cpu/cpu.h"
 
 #include <stdbool.h>
 #include <stdio.h>
 
-#include "../src/alu.h"
+#include "../cpu/alu.h"
 
 void ALU_test() {
     printf("----------------\n");

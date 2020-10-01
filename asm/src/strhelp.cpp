@@ -1,4 +1,5 @@
 #include "strhelp.h"
+
 using std::string;
 const string WHITESPACE = " \n\r\t\f\v";
 

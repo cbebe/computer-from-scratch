@@ -1,7 +1,12 @@
+# config
 .vscode
-dist
+
+# directories for trying out things
+sandbox
+resources
+
+# build files and executables
 obj
 exe
 *.out
-sandbox
-resources
+hasm

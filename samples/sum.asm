@@ -18,6 +18,4 @@ M=M+1 // i = i + 1
 @LOOP
 0;JMP
 (END)
-@END
-0;JMP
-
+0
