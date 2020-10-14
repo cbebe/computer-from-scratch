@@ -8,8 +8,8 @@
 #include <iostream>
 #include <string>
 
+#include "ASMParser.h"
 #include "Code.h"
-#include "Parser.h"
 #include "SymbolTable.h"
 #include "strhelp.h"
 
@@ -18,14 +18,15 @@ void die(std::string message) {
     exit(1);
 }
 
-void parseSymbols(std::string &inputFilename, SymbolTable &table) {
-    Parser source(inputFilename);
+SymbolTable parseSymbols(std::string &inputFilename) {
+    ASMParser source(inputFilename);
+    SymbolTable table;
     unsigned long lineNo = 0;
     unsigned long romNum = 0;
 
     while (true) {
         source.advance(lineNo);
-        if (!source.hasMoreCommands()) return;
+        if (!source.hasMoreCommands()) return table;
 
         command type = source.commandType(lineNo);
         if (type == A_COM || type == C_COM) romNum++;
@@ -38,7 +39,7 @@ void parseSymbols(std::string &inputFilename, SymbolTable &table) {
 
 void assembleCode(std::string &inputFilename, std::ofstream &out,
                   SymbolTable &table) {
-    Parser source(inputFilename);
+    ASMParser source(inputFilename);
     unsigned long lineNo = 0;
     unsigned long address = 0x10;  // 0x0 to 0xF are predefined
 
@@ -82,11 +83,11 @@ int main(int argc, const char *argv[]) {
     std::string outFilename = (argc == 3) ? argv[2] : "a.out";
 
     std::ofstream fout(outFilename, std::ios::out | std::ios_base::binary);
+
     if (fout.fail()) die("Output file creation failed.\n");
 
     // Generate symbol table
-    SymbolTable table;
-    parseSymbols(inFilename, table);
+    SymbolTable table = parseSymbols(inFilename);
     // Assemble machine code
     assembleCode(inFilename, fout, table);
 

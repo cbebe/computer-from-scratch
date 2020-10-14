@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "./src/cpu.h"
+#include "cpu.h"
 
 int main() {
     struct CPU *cpu = new_cpu();

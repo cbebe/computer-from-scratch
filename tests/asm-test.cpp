@@ -14,8 +14,9 @@ bool CodeTest() {
     cout << "Testing dest method...\n";
 
     vector<string> destTokens = {"M", "D", "MD", "A", "AM", "AD", "AMD"};
+    unsigned long j = 0;
     for (int i = 1; i <= 7; ++i) {
-        if (i != Code::dest(destTokens[i - 1])) return false;
+        if (i != Code::dest(destTokens[i - 1], j)) return false;
 
         cout << "Test " << i << " success!\n";
     }
@@ -24,7 +25,7 @@ bool CodeTest() {
     vector<string> jumpTokens = {"JGT", "JEQ", "JGE", "JLT",
                                  "JNE", "JLE", "JMP"};
     for (int i = 1; i <= 7; ++i) {
-        if (i != Code::jump(jumpTokens[i - 1])) return false;
+        if (i != Code::jump(jumpTokens[i - 1], j)) return false;
         cout << "Test " << i << " success!\n";
     }
 

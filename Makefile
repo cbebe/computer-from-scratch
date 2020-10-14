@@ -42,7 +42,7 @@ test: $(TESTS)
 	./exe/asm-test
 
 clean:
-	cd asm && $(MAKE) clean
-	cd cpu && $(MAKE) clean
+	cd code/asm && $(MAKE) clean
+	cd code/cpu && $(MAKE) clean
 
 .PHONY: all asm cpu test clean
