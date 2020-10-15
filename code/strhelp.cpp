@@ -1,6 +1,11 @@
 #include "strhelp.h"
 
+#include <string>
+#include <vector>
+
 using std::string;
+using std::vector;
+
 const string WHITESPACE = " \n\r\t\f\v";
 
 bool found(size_t pos) { return pos != string::npos; }
@@ -24,3 +29,16 @@ string rtrim(const string &s) {
 }
 
 string trimWhitespace(const string &s) { return rtrim(ltrim(s)); }
+
+vector<string> split(const string &s, string delim) {
+    vector<string> tokens;
+    size_t start = 0;
+    size_t end = s.find(delim);
+    while (found(end)) {
+        tokens.push_back(s.substr(start, end - start));
+        start = end + delim.length();
+        end = s.find(delim, start);
+    }
+    tokens.push_back(s.substr(start, end));
+    return tokens;
+}
